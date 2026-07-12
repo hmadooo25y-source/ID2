@@ -1,0 +1,97 @@
+:root { --accent: #007aff; --bg: #09090b; --card: #18181b; --input: #27272a; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body { margin: 0; background: var(--bg); color: #fff; font-family: 'Tajawal', sans-serif; overflow: hidden; }
+
+/* وضع المعاينة الكاملة */
+body.fullscreen-mode .top-nav, 
+body.fullscreen-mode .floating-controls { display: none !important; }
+body.fullscreen-mode .editor-workspace { background: #000; padding: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+body.fullscreen-mode .id-card-canvas { transform: scale(0.85); box-shadow: none; }
+body.fullscreen-mode .selectable.selected { outline: none !important; }
+
+.app-screen { display: none; height: 100vh; flex-direction: column; }
+.app-screen.active { display: flex; }
+.scrollable { overflow-y: auto; }
+
+.editor-workspace { 
+    flex: 1;
+    overflow-x: auto; 
+    overflow-y: auto;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: grab;
+    transition: background 0.3s;
+}
+
+.id-card-canvas { 
+    width: 750px; 
+    height: 475px; 
+    background: white url('blank-id-card.jpg') no-repeat center/cover; 
+    position: relative; 
+    flex-shrink: 0;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    /* تصغير حجم البطاقة في المعاينة */
+    transform: scale(0.4); 
+    transform-origin: center;
+}
+
+/* تنسيق النصوص والبيانات */
+.field-row { position: absolute; right: 145px; width: 350px; color: #000; font-weight: bold; font-size: 19px; display: flex; align-items: center; font-family: Arial, sans-serif; }
+.field-row span.he { margin-right: 30px; font-family: Arial; }
+.id-number-text { position: absolute; top: 118px; right: 280px; font-size: 34px; font-family: Arial; font-weight: bold; color: #000; }
+.dob-text, .iss-text { font-family: Arial; font-weight: bold; color: #000; position: absolute; font-size: 19px; }
+
+/* الإحداثيات */
+.r1{top:179px} .r2{top:210px} .r3{top:241px} .r4{top:266px} .r5{top:299px} .r6{top:385px} .r-sex{top:410px} .r7{top:432px} .r-iss-p{top:442px; right:200px} .r-status{top:460px} .r-measurements{top:480px}
+.dob-text { top: 340px; right: 130px; }
+.iss-text { top: 442px; right: 100px; }
+
+.stamp-element { position: absolute; width: 130px; top: 150px; left: 140px; z-index: 10; }
+.stamp-element img { width: 100%; pointer-events: none; }
+.photo-frame { position: absolute; top: 60px; left: 45px; width: 188px; height: 225px; overflow: hidden; border: 2px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: none; }
+#out-photo { width: 100%; height: 100%; object-fit: cover; position: relative; }
+#out-photo::after { 
+    content: "✓ VERIFIED"; 
+    position: absolute; 
+    bottom: -10px; 
+    left: 50%; 
+    transform: translateX(-50%) rotate(-15deg); 
+    background: rgba(0, 150, 136, 0.9); 
+    color: white; 
+    padding: 3px 8px; 
+    font-size: 10px; 
+    font-weight: bold; 
+    letter-spacing: 1px; 
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.noise-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.08; display: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.ultra-real { filter: contrast(1.05) brightness(0.96) saturate(0.9) sepia(0.03); }
+
+.neo-form { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; margin: 15px; }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+input { background: var(--input); border: 1px solid #3f3f46; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; outline: none; width: 100%; }
+
+.floating-controls { background: var(--card); padding: 15px; border-top: 2px solid var(--accent); }
+.tools-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
+.tool-card { min-width: 170px; background: var(--input); padding: 12px; border-radius: 12px; flex-shrink: 0; }
+
+.selectable.selected { outline: 3px solid var(--accent); outline-offset: 4px; }
+.btn-primary { background: var(--accent); color: #fff; padding: 15px; border: none; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 15px; }
+.btn-gold { background: linear-gradient(to right, #bf953f, #fcf6ba) !important; color: #000 !important; }
+
+.top-nav { padding: 10px; background: var(--card); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+.btn-back, .btn-save { padding: 8px 15px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+.nav-title { font-size: 11px; opacity: 0.6; }
+
+.dpad-controller { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.mid-dpad { display: flex; gap: 20px; }
+.dpad-controller button { width: 45px; height: 35px; background: #333; color: white; border: 1px solid #444; border-radius: 6px; }
+.btn-group { display: flex; gap: 5px; margin-top: 5px; }
+.btn-group button { flex: 1; padding: 8px; background: #333; border: 1px solid #444; color: white; border-radius: 5px; font-size: 12px; }
