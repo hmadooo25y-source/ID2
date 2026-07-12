@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرر بطاقات الهوية - ID Card Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #0056b3;
+            --primary-light: #e7f1ff;
+            --border: #d0d8e8;
+            --bg: #f8fafc;
+            --text: #1a1a1a;
+            --text-muted: #666;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Tajawal', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 380px 1fr 320px;
+            height: 100vh;
+            gap: 12px;
+            padding: 12px;
+            background: #e8ecf4;
+        }
+
+        /* ===== PANEL LEFT: INPUT ===== */
+        .panel-input {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #003d82 100%);
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-scroll {
+            overflow-y: auto;
+            flex: 1;
+            padding: 16px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .form-input {
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+
+        .form-input.full {
+            grid-column: 1 / -1;
+        }
+
+        .photo-upload {
+            grid-column: 1 / -1;
+            aspect-ratio: 3/4;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .photo-upload:hover {
+            border-color: var(--primary);
+            background: rgba(0, 86, 179, 0.15);
+        }
+
+        .photo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-upload-placeholder {
+            text-align: center;
+            color: var(--primary);
+            font-size: 12px;
+        }
+
+        .btn-action {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-action:hover {
+            background: #003d82;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 86, 179, 0.3);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        .btn-export {
+            background: var(--success);
+        }
+
+        .btn-export:hover {
+            background: #059669;
+        }
+
+        /* ===== PANEL CENTER: PREVIEW ===== */
+        .panel-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-container {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .id-card {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 9 / 12.8;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .card-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .field {
+            position: absolute;
+            font-family: Arial, sans-serif;
+            cursor: move;
+            padding: 2px 4px;
+            transition: all 0.2s;
+            user-select: none;
+            border: 2px solid transparent;
+        }
+
+        .field:hover {
+            border-color: rgba(0, 86, 179, 0.3);
+            background: rgba(0, 86, 179, 0.05);
+        }
+
+        .field.selected {
+            border-color: var(--primary);
+            background: rgba(0, 86, 179, 0.15);
+            z-index: 10;
+        }
+
+        .field-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--primary);
+            opacity: 0;
+            margin-bottom: 2px;
+            transition: opacity 0.2s;
+        }
+
+        .field.selected .field-label {
+            opacity: 1;
+        }
+
+        .field-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .card-photo {
+            position: absolute;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+        /* ===== PANEL RIGHT: CONTROLS ===== */
+        .panel-controls {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .controls-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .controls-scroll {
+            overflow-y: auto;
+            flex: 1;
+            padding: 14px;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+        }
+
+        .control-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-value {
+            font-size: 11px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 86, 179, 0.4);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 86, 179, 0.4);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-small:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-small.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 36px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 8px;
+            }
+
+            .panel-input,
+            .panel-controls {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .card-container {
+                padding: 10px;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--success);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 999;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== LEFT PANEL: INPUT ===== -->
+    <div class="panel-input">
+        <div class="panel-header">
+            <i class="fas fa-edit"></i> إدخال البيانات
+        </div>
+        <div class="input-scroll">
+
+            <!-- معلومات شخصية -->
+            <div class="form-section">
+                <div class="section-title"><i class="fas fa-user"></i> المعلومات الأساسية</div>
+                
+                <div class="form-group">
+                    <label class="form-label">رقم الهوية</label>
+                    <input type="text" class="form-input full" id="idNum" placeholder="مثال: 4 2264051 6" value="4 2264051 6">
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">الاسم (عربي)</label>
+                        <input type="text" class="form-input" id="nameAr" placeholder="نورهان" value="نورهان">
+                    </div>
+                    <div>
+                        <label class="form-label">الاسم (عبري)</label>
+                        <input type="text" class="form-input" id="nameHe" placeholder="נורהאן" value="נורהאן" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">الأب (عربي)</label>
+                        <input type="text" class="form-input" id="fatherAr" placeholder="طلعت" value="طلعت">
+                    </div>
+                    <div>
+                        <label class="form-label">الأب (عبري)</label>
+                        <input type="text" class="form-input" id="fatherHe" placeholder="טלעת" value="טלעת" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">الجد (عربي)</label>
+                        <input type="text" class="form-input" id="grandAr" placeholder="محمد" value="محمد">
+                    </div>
+                    <div>
+                        <label class="form-label">الجد (عبري)</label>
+                        <input type="text" class="form-input" id="grandHe" placeholder="מחמד" value="מחמד" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">العائلة (عربي)</label>
+                        <input type="text" class="form-input" id="familyAr" placeholder="الفقعاوي" value="الفقعاوي">
+                    </div>
+                    <div>
+                        <label class="form-label">العائلة (عبري)</label>
+                        <input type="text" class="form-input" id="familyHe" placeholder="אלפקעאוי" value="אלפקעאוי" dir="ltr">
+                    </div>
+                </div>
+            </div>
+
+            <!-- البيانات الإضافية -->
+            <div class="form-section">
+                <div class="section-title"><i class="fas fa-id-card"></i> البيانات الإضافية</div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">تاريخ الميلاد</label>
+                        <input type="text" class="form-input" id="dob" placeholder="09/11/2005" value="09/11/2005" dir="ltr">
+                    </div>
+                    <div>
+                        <label class="form-label">الجنس (عربي)</label>
+                        <input type="text" class="form-input" id="sexAr" placeholder="أنثى" value="أنثى">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">الديانة (عربي)</label>
+                        <input type="text" class="form-input" id="religionAr" placeholder="مسلم" value="مسلم">
+                    </div>
+                    <div>
+                        <label class="form-label">الديانة (عبري)</label>
+                        <input type="text" class="form-input" id="religionHe" placeholder="מוסלמי" value="מוסלמי" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">مكان الولادة (عربي)</label>
+                        <input type="text" class="form-input" id="pobAr" placeholder="خانيونس" value="خانيونس">
+                    </div>
+                    <div>
+                        <label class="form-label">مكان الولادة (عبري)</label>
+                        <input type="text" class="form-input" id="pobHe" placeholder="חאן יונס" value="חאן יונס" dir="ltr">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label class="form-label">تاريخ الإصدار</label>
+                        <input type="text" class="form-input" id="issueDate" placeholder="15/09/2022" value="15/09/2022" dir="ltr">
+                    </div>
+                    <div>
+                        <label class="form-label">مكان الإصدار (عربي)</label>
+                        <input type="text" class="form-input" id="issueAr" placeholder="خانيونس" value="خانيونس">
+                    </div>
+                </div>
+            </div>
+
+            <!-- الصورة الشخصية -->
+            <div class="form-section">
+                <div class="section-title"><i class="fas fa-camera"></i> الصورة الشخصية</div>
+                <label class="photo-upload" for="photoInput">
+                    <img id="photoPreview" style="display:none;">
+                    <div class="photo-upload-placeholder" id="photoPlaceholder">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                        اضغط لرفع صورة
+                    </div>
+                </label>
+                <input type="file" id="photoInput" hidden accept="image/*">
+            </div>
+
+            <button class="btn-action btn-export" onclick="exportCard()">
+                <i class="fas fa-download"></i> تحميل البطاقة
+            </button>
+        </div>
+    </div>
+
+    <!-- ===== CENTER PANEL: PREVIEW ===== -->
+    <div class="panel-center">
+        <div class="card-container">
+            <div class="id-card">
+                <canvas id="cardBg" class="card-bg"></canvas>
+                <div class="card-content" id="cardContent">
+                    <div class="field" data-id="idNumber" style="top:5%; left:30%; font-size:20px;">
+                        <div class="field-label">رقم الهوية</div>
+                        <div class="field-text" id="display-idNum">4 2264051 6</div>
+                    </div>
+                    <img class="card-photo" id="cardPhoto" style="top:5%; left:5%; width:15%; height:25%;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RIGHT PANEL: CONTROLS ===== -->
+    <div class="panel-controls">
+        <div class="controls-title">
+            <i class="fas fa-sliders-h"></i> التحكم والتحرير
+        </div>
+        <div class="controls-scroll">
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-arrows-alt"></i> موضع النص
+                    <span class="control-value" id="posInfo">اختر حقل</span>
+                </label>
+                <div class="button-group" id="posControls" style="display:none;">
+                    <button class="btn-small" onclick="moveField(-5, 0)"><i class="fas fa-arrow-up"></i> أعلى</button>
+                    <button class="btn-small" onclick="moveField(5, 0)"><i class="fas fa-arrow-down"></i> أسفل</button>
+                    <button class="btn-small" onclick="moveField(0, -5)"><i class="fas fa-arrow-left"></i> يسار</button>
+                    <button class="btn-small" onclick="moveField(0, 5)"><i class="fas fa-arrow-right"></i> يمين</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-text-height"></i> حجم الخط
+                    <span class="control-value" id="sizeValue">14px</span>
+                </label>
+                <input type="range" class="slider" id="fontSizeSlider" min="8" max="32" value="14" oninput="updateFontSize()">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-palette"></i> لون النص
+                </label>
+                <input type="color" class="color-picker" id="textColor" value="#000000" oninput="updateTextColor()">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-font"></i> سمك الخط
+                </label>
+                <div class="button-group">
+                    <button class="btn-small" onclick="setFontWeight(400)">عادي</button>
+                    <button class="btn-small" onclick="setFontWeight(700)">غامق</button>
+                    <button class="btn-small" onclick="setFontWeight(900)">جداً</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-rotate"></i> دوران النص
+                    <span class="control-value" id="rotationValue">0°</span>
+                </label>
+                <input type="range" class="slider" id="rotationSlider" min="0" max="360" value="0" oninput="updateRotation()">
+            </div>
+
+            <div class="control-group">
+                <label class="control-label">
+                    <i class="fas fa-expand"></i> العتامة
+                    <span class="control-value" id="opacityValue">100%</span>
+                </label>
+                <input type="range" class="slider" id="opacitySlider" min="0" max="100" value="100" oninput="updateOpacity()">
+            </div>
+
+            <button class="btn-action" onclick="resetSelected()">
+                <i class="fas fa-undo"></i> إعادة تعيين
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ===== STATE & VARIABLES =====
+    let selectedField = null;
+    const fields = {};
+
+    // ===== INITIALIZE FIELDS =====
+    function initializeFields() {
+        const fieldElements = document.querySelectorAll('.field[data-id]');
+        fieldElements.forEach(el => {
+            const id = el.dataset.id;
+            fields[id] = {
+                element: el,
+                originalStyle: {
+                    top: el.style.top,
+                    left: el.style.left,
+                    fontSize: el.style.fontSize || '14px',
+                    color: el.style.color || '#000000',
+                    fontWeight: el.style.fontWeight || '400',
+                    transform: el.style.transform || '',
+                    opacity: el.style.opacity || '1'
+                }
+            };
+            el.addEventListener('click', () => selectField(id));
+        });
+    }
+
+    // ===== FIELD SELECTION =====
+    function selectField(id) {
+        if (selectedField) {
+            selectedField.element.classList.remove('selected');
+        }
+        selectedField = fields[id];
+        selectedField.element.classList.add('selected');
+        
+        const rect = selectedField.element.getBoundingClientRect();
+        document.getElementById('posInfo').textContent = `${Math.round(rect.top)}px, ${Math.round(rect.left)}px`;
+        document.getElementById('posControls').style.display = 'grid';
+        
+        // Update controls with selected field's current values
+        const style = window.getComputedStyle(selectedField.element);
+        document.getElementById('fontSizeSlider').value = parseInt(style.fontSize);
+        document.getElementById('textColor').value = rgbToHex(style.color);
+        document.getElementById('rotationSlider').value = getRotation(style.transform);
+        document.getElementById('opacitySlider').value = parseInt(parseFloat(style.opacity) * 100);
+        
+        updateControlValues();
+    }
+
+    // ===== FIELD EDITING =====
+    function moveField(dy, dx) {
+        if (!selectedField) return;
+        const current = {
+            top: parseInt(selectedField.element.style.top) || 0,
+            left: parseInt(selectedField.element.style.left) || 0
+        };
+        selectedField.element.style.top = (current.top + dy) + 'px';
+        selectedField.element.style.left = (current.left + dx) + 'px';
+    }
+
+    function updateFontSize() {
+        if (!selectedField) return;
+        const size = document.getElementById('fontSizeSlider').value;
+        selectedField.element.style.fontSize = size + 'px';
+        document.getElementById('sizeValue').textContent = size + 'px';
+    }
+
+    function updateTextColor() {
+        if (!selectedField) return;
+        const color = document.getElementById('textColor').value;
+        selectedField.element.style.color = color;
+    }
+
+    function setFontWeight(weight) {
+        if (!selectedField) return;
+        selectedField.element.style.fontWeight = weight;
+    }
+
+    function updateRotation() {
+        if (!selectedField) return;
+        const angle = document.getElementById('rotationSlider').value;
+        selectedField.element.style.transform = `rotate(${angle}deg)`;
+        document.getElementById('rotationValue').textContent = angle + '°';
+    }
+
+    function updateOpacity() {
+        if (!selectedField) return;
+        const opacity = document.getElementById('opacitySlider').value / 100;
+        selectedField.element.style.opacity = opacity;
+        document.getElementById('opacityValue').textContent = parseInt(opacity * 100) + '%';
+    }
+
+    function updateControlValues() {
+        document.getElementById('sizeValue').textContent = document.getElementById('fontSizeSlider').value + 'px';
+        document.getElementById('rotationValue').textContent = document.getElementById('rotationSlider').value + '°';
+        document.getElementById('opacityValue').textContent = document.getElementById('opacitySlider').value + '%';
+    }
+
+    function resetSelected() {
+        if (!selectedField) return;
+        const original = selectedField.originalStyle;
+        Object.keys(original).forEach(key => {
+            selectedField.element.style[key] = original[key];
+        });
+        updateControlValues();
+    }
+
+    // ===== UTILITY FUNCTIONS =====
+    function rgbToHex(rgb) {
+        const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        if (!match) return '#000000';
+        return "#" + ((1 << 24) + (parseInt(match[1]) << 16) + (parseInt(match[2]) << 8) + parseInt(match[3])).toString(16).slice(1);
+    }
+
+    function getRotation(transform) {
+        const match = transform.match(/rotate\((\d+)deg\)/);
+        return match ? parseInt(match[1]) : 0;
+    }
+
+    // ===== PHOTO UPLOAD =====
+    document.getElementById('photoInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = document.getElementById('cardPhoto');
+            img.src = ev.target.result;
+            document.getElementById('photoPreview').src = ev.target.result;
+            document.getElementById('photoPreview').style.display = 'block';
+            document.getElementById('photoPlaceholder').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ===== DATA SYNC =====
+    const inputs = {
+        'idNum': 'display-idNum',
+    };
+
+    Object.keys(inputs).forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', () => {
+                const displayId = inputs[inputId];
+                if (displayId) {
+                    document.getElementById(displayId).textContent = input.value;
+                }
+            });
+        }
+    });
+
+    // ===== DRAW CARD BACKGROUND =====
+    function drawCardBackground() {
+        const canvas = document.getElementById('cardBg');
+        const ctx = canvas.getContext('2d');
+        
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // Draw gradient background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#e8f4f8');
+        gradient.addColorStop(1, '#d4e9f0');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw decorative elements
+        ctx.strokeStyle = '#0056b3';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        
+        // Palestinian colors accents
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, 8);
+    }
+
+    // ===== EXPORT CARD =====
+    async function exportCard() {
+        try {
+            const card = document.querySelector('.id-card');
+            const canvas = await html2canvas(card, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            });
+            
+            const link = document.createElement('a');
+            link.download = `ID_Card_${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            showToast('تم تحميل البطاقة بنجاح!');
+        } catch (error) {
+            console.error('Export error:', error);
+            showToast('حدث خطأ في التحميل', 'error');
+        }
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.background = type === 'error' ? 'var(--danger)' : 'var(--success)';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+
+    // ===== INITIALIZE =====
+    window.addEventListener('load', () => {
+        drawCardBackground();
+        initializeFields();
+        window.addEventListener('resize', drawCardBackground);
+    });
+</script>
+
+</body>
+</html>
