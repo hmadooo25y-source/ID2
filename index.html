@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ID MASTER PRO PLATINUM</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="screen-input" class="app-screen active scrollable">
+        <div class="app-container">
+            
+            <header class="glass-header">
+                <i class="fa-solid fa-lock text-blue"></i>
+                <h1>نظام إصدار الهوية | ID MASTER PRO PLATINUM</h1>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Coat_of_arms_of_Palestine.svg/1200px-Coat_of_arms_of_Palestine.svg.png" alt="Logo" class="header-logo">
+            </header>
+
+            <div class="tabs-mockup">
+                <div class="tab active">Input Screen</div>
+                <div class="tab">Input Screen</div>
+            </div>
+
+            <div class="form-container">
+                <div class="top-profile-row">
+                    <div class="id-input-wrapper">
+                        <label>رقم الهوية</label>
+                        <input type="text" id="in-id-num" class="save-me text-center" value="4 2264051 6">
+                    </div>
+                    <div class="photo-upload-wrapper" onclick="document.getElementById('in-photo').click()">
+                        <img id="preview-upload-photo" src="1000009660.jpg" alt="Photo" onerror="this.src='https://via.placeholder.com/150?text=Photo'">
+                        <span>تغيير الصورة</span>
+                    </div>
+                    <input type="file" id="in-photo" hidden accept="image/*">
+                </div>
+
+                <div class="pill-inputs-container">
+                    <div class="pill-row">
+                        <input type="text" id="in-name-he" class="save-me text-left" placeholder="Nourhan" value="נורהאן" dir="ltr">
+                        <label>الاسم</label>
+                        <input type="text" id="in-name-ar" class="save-me text-right" value="نورهان">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-father-he" class="save-me text-left" placeholder="Tal'at" value="טלעת" dir="ltr">
+                        <label>اسم الأب</label>
+                        <input type="text" id="in-father-ar" class="save-me text-right" value="طلعت">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-grand-he" class="save-me text-left" placeholder="Muḥammad" value="מחמד" dir="ltr">
+                        <label>اسم الجد</label>
+                        <input type="text" id="in-grand-ar" class="save-me text-right" value="محمد">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-family-he" class="save-me text-left" placeholder="Al-Faq'āwī" value="אלפקעאוי" dir="ltr">
+                        <label>اسم العائلة</label>
+                        <input type="text" id="in-family-ar" class="save-me text-right" value="الفقعاوي">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-mother-he" class="save-me text-left" placeholder="Kifā" value="כפא" dir="ltr">
+                        <label>اسم الأم</label>
+                        <input type="text" id="in-mother-ar" class="save-me text-right" value="كفا">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-pob-he" class="save-me text-left" placeholder="Khān Yūnis" value="חאן יונס" dir="ltr">
+                        <label>مكان الولادة</label>
+                        <input type="text" id="in-pob-ar" class="save-me text-right" value="خانيونس">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-dob" class="save-me text-center w-full" value="09/11/2005" dir="ltr">
+                        <label style="min-width: 80px;">تاريخ الولادة</label>
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-iss-he" class="save-me text-left" placeholder="Khān Yūnis" value="חאן יונס" dir="ltr">
+                        <label>مكان الإصدار</label>
+                        <input type="text" id="in-iss-ar" class="save-me text-right" value="خانيونس">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-iss-date" class="save-me text-center w-full" value="15/09/2022" dir="ltr">
+                        <label style="min-width: 80px;">تاريخ الإصدار</label>
+                    </div>
+                    <div class="pill-row multi-label">
+                        <input type="text" id="in-sex-he" class="save-me text-left" placeholder="F" value="נקבה" dir="ltr">
+                        <label>الجنس</label>
+                        <input type="text" id="in-sex-ar" class="save-me text-right" value="أنثى">
+                        <input type="text" id="in-rel-he" class="save-me text-left" placeholder="Muslim" value="מוסלמי" dir="ltr">
+                        <label>الديانة</label>
+                        <input type="text" id="in-rel-ar" class="save-me text-right" value="مسلم">
+                    </div>
+
+                    <div class="pill-divider"><i class="fa-solid fa-chevron-up"></i> ملحق</div>
+                    
+                    <div class="pill-row">
+                        <i class="fa-solid fa-chevron-down text-muted"></i>
+                        <input type="text" id="in-address-he" class="save-me text-left" placeholder="Khān Yūnis" value="חאן יונס" dir="ltr">
+                        <label>العنوان</label>
+                        <input type="text" id="in-address-ar" class="save-me text-right" value="خانيونس">
+                    </div>
+                    <div class="pill-row">
+                        <input type="text" id="in-town-he" class="save-me text-left" placeholder="Khān Yūnis" value="-" dir="ltr">
+                        <label>البلدة</label>
+                        <input type="text" id="in-town-ar" class="save-me text-right" value="-">
+                    </div>
+                    <div class="pill-row">
+                        <i class="fa-solid fa-chevron-down text-muted"></i>
+                        <input type="text" id="in-status-he" class="save-me text-left" placeholder="Single" value="רווקה" dir="ltr">
+                        <label>الحالة الشخصية</label>
+                        <input type="text" id="in-status-ar" class="save-me text-right" value="انسه">
+                    </div>
+                </div>
+
+                <div class="upload-bg-card" onclick="document.getElementById('in-bg-card').click()">
+                    <i class="fa-regular fa-image"></i> رفع صورة الهوية الفارغة (اختياري)
+                </div>
+                <input type="file" id="in-bg-card" hidden accept="image/*">
+
+                <button class="btn-outline-blue" onclick="processAndShow()">معاينة وإصدار</button>
+
+                <div class="mockup-bottom-toolbar">
+                    <div class="toolbar-title">أدوات متقدمة</div>
+                    <div class="toolbar-icons">
+                        <div class="tool-item" onclick="alert('اضغط معاينة أولاً لتفعيل الأدوات')">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            <span>Text Positioning</span>
+                        </div>
+                        <div class="tool-item" onclick="alert('اضغط معاينة أولاً لتفعيل الأدوات')">
+                            <i class="fa-solid fa-font"></i>
+                            <span>Font Weight</span>
+                        </div>
+                        <div class="tool-item" onclick="alert('اضغط معاينة أولاً لتفعيل الأدوات')">
+                            <i class="fa-solid fa-rotate"></i>
+                            <span>Font Rotation</span>
+                        </div>
+                        <div class="tool-item" onclick="alert('اضغط معاينة أولاً لتفعيل الأدوات')">
+                            <i class="fa-solid fa-wave-square"></i>
+                            <span>Noise Overlay</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-preview" class="app-screen">
+        <nav class="glass-header">
+            <button class="btn-icon" onclick="goBack()"><i class="fa-solid fa-chevron-right"></i> رجوع</button>
+            <div class="nav-title">نقر مزدوج للملء</div>
+            <button class="btn-icon save-btn" id="btn-save">حفظ <i class="fa-solid fa-download"></i></button>
+        </nav>
+
+        <div class="editor-workspace" id="scroll-container">
+            <div id="capture-area" class="id-card-canvas">
+                <img id="bg-card-img" src="id-card.png" class="bg-card" alt="ID Background">
+                
+                <div class="photo-frame"><img id="out-photo" src="1000009660.jpg"></div>
+                
+                <div id="stamp-obj" class="selectable stamp-element" data-id="stamp">
+                    <img src="https://i.imgur.com/0zhyOvQ.png">
+                </div>
+
+                <div id="out-id-num" class="selectable id-number-text text-bold"></div>
+                
+                <div id="row-1" class="selectable field-row r1"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-2" class="selectable field-row r2"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-3" class="selectable field-row r3"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-4" class="selectable field-row r4"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-5" class="selectable field-row r5"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-6" class="selectable field-row r6"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-sex" class="selectable field-row r-sex"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-7" class="selectable field-row r7"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-iss-p" class="selectable field-row r-iss-p"><span class="he"></span><span class="ar"></span></div>
+                
+                <div id="out-dob-display" class="selectable dob-text text-bold"></div>
+                <div id="out-iss-display" class="selectable iss-text text-bold"></div>
+
+                <div id="out-id-num-sub" class="selectable id-number-sub text-bold"></div>
+                <div id="row-sub-name" class="selectable field-row r-sub-name"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-address" class="selectable field-row r-address"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-town" class="selectable field-row r-town"><span class="he"></span><span class="ar"></span></div>
+                <div id="row-status" class="selectable field-row r-status"><span class="he"></span><span class="ar"></span></div>
+
+                <div id="noise-layer" class="noise-overlay"></div>
+            </div>
+        </div>
+
+        <div class="mockup-bottom-toolbar active-toolbar">
+            <div class="dpad-overlay" id="dpad" style="display:none;">
+                <button onclick="move('up')"><i class="fa-solid fa-caret-up"></i></button>
+                <div>
+                    <button onclick="move('right')"><i class="fa-solid fa-caret-right"></i></button>
+                    <button onclick="move('left')"><i class="fa-solid fa-caret-left"></i></button>
+                </div>
+                <button onclick="move('down')"><i class="fa-solid fa-caret-down"></i></button>
+            </div>
+
+            <div class="toolbar-icons">
+                <div class="tool-item" onclick="toggleDpad()">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    <span>Position</span>
+                </div>
+                <div class="tool-item" onclick="changeWeight(100)">
+                    <i class="fa-solid fa-font"></i>
+                    <span>Font +</span>
+                </div>
+                <div class="tool-item" onclick="rotateItem(1)">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Rotate</span>
+                </div>
+                <div class="tool-item" onclick="applyNoise()">
+                    <i class="fa-solid fa-wave-square"></i>
+                    <span>Noise</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
