@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محرر الصور الاحترافي | Professional Image Editor</title>
+    <link rel="stylesheet" href="style_pro.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="pro-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-edit"></i>
+                        <span>Pro Editor</span>
+                    </div>
+                </div>
+                <div class="header-center">
+                    <h1>محرر الصور الاحترافي</h1>
+                </div>
+                <div class="header-right">
+                    <button class="btn-icon" id="fullscreen-btn" title="ملء الشاشة">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button class="btn-icon" id="help-btn" title="مساعدة">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- Left Sidebar -->
+            <aside class="sidebar left-sidebar">
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-image"></i>
+                        <span>الطبقات</span>
+                    </div>
+                    <div class="layers-panel">
+                        <div class="layer-item active" data-layer="background">
+                            <div class="layer-thumbnail">
+                                <img src="id-card.png" alt="Background">
+                            </div>
+                            <div class="layer-info">
+                                <div class="layer-name">الخلفية</div>
+                                <div class="layer-type">صورة</div>
+                            </div>
+                            <button class="layer-visibility" data-layer="background">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <div class="layer-item" data-layer="stamp">
+                            <div class="layer-thumbnail">
+                                <img src="stamp.png" alt="Stamp">
+                            </div>
+                            <div class="layer-info">
+                                <div class="layer-name">الختم</div>
+                                <div class="layer-type">صورة</div>
+                            </div>
+                            <button class="layer-visibility" data-layer="stamp">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-magic"></i>
+                        <span>التأثيرات السريعة</span>
+                    </div>
+                    <div class="quick-effects">
+                        <button class="effect-btn" data-effect="sepia" title="تأثير سيبيا">
+                            <i class="fas fa-palette"></i>
+                            <span>سيبيا</span>
+                        </button>
+                        <button class="effect-btn" data-effect="grayscale" title="رمادي">
+                            <i class="fas fa-ban"></i>
+                            <span>رمادي</span>
+                        </button>
+                        <button class="effect-btn" data-effect="vintage" title="قديم">
+                            <i class="fas fa-camera-retro"></i>
+                            <span>قديم</span>
+                        </button>
+                        <button class="effect-btn" data-effect="blur" title="تمويه">
+                            <i class="fas fa-water"></i>
+                            <span>تمويه</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-history"></i>
+                        <span>السجل</span>
+                    </div>
+                    <div id="history-panel" class="history-panel">
+                        <div class="history-empty">
+                            <i class="fas fa-inbox"></i>
+                            <p>لا يوجد سجل</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Workspace -->
+            <main class="workspace">
+                <div class="canvas-container">
+                    <div class="zoom-controls">
+                        <button id="zoom-reset" class="zoom-btn" title="إعادة تعيين التكبير">
+                            <i class="fas fa-compress"></i>
+                            <span id="zoom-value">100%</span>
+                        </button>
+                        <div class="zoom-slider-wrapper">
+                            <i class="fas fa-minus"></i>
+                            <input type="range" id="zoom-slider" min="25" max="400" value="100">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                    </div>
+
+                    <div class="canvas-area" id="canvas-area">
+                        <div class="canvas-wrapper">
+                            <!-- Background Image -->
+                            <img id="background-layer" src="id-card.png" alt="Background" class="layer-item-canvas" data-layer="background">
+                            
+                            <!-- Stamp Image (Draggable & Editable) -->
+                            <div class="stamp-container" id="stamp-container" data-layer="stamp">
+                                <img id="stamp-layer" src="stamp.png" alt="Stamp" class="layer-item-canvas">
+                                <div class="stamp-controls">
+                                    <button class="control-btn" id="delete-stamp" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="control-btn" id="duplicate-stamp" title="نسخ">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Toolbar -->
+                    <div class="bottom-toolbar">
+                        <button class="tool-btn" id="undo-btn" title="تراجع">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button class="tool-btn" id="redo-btn" title="إعادة">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <div class="divider"></div>
+                        <button class="tool-btn" id="reset-btn" title="إعادة تعيين">
+                            <i class="fas fa-sync"></i>
+                        </button>
+                        <div class="divider"></div>
+                        <button class="tool-btn" id="save-btn" title="حفظ">
+                            <i class="fas fa-save"></i>
+                        </button>
+                        <button class="tool-btn" id="download-btn" title="تحميل">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Sidebar - Properties Panel -->
+            <aside class="sidebar right-sidebar">
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>خصائص الطبقة</span>
+                    </div>
+                    <div id="properties-panel" class="properties-panel">
+                        <div class="properties-empty">
+                            <i class="fas fa-hand-pointer"></i>
+                            <p>اختر عنصراً للتحرير</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-filter"></i>
+                        <span>التصفية والتأثيرات</span>
+                    </div>
+                    <div class="filters-panel">
+                        <div class="filter-group">
+                            <label>السطوع</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="brightness" min="0" max="200" value="100" class="slider">
+                                <span class="value-display">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>التباين</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="contrast" min="0" max="200" value="100" class="slider">
+                                <span class="value-display">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>التشبع</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="saturation" min="0" max="200" value="100" class="slider">
+                                <span class="value-display">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>الهوى</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="hue" min="0" max="360" value="0" class="slider">
+                                <span class="value-display">0°</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>الشفافية</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="opacity" min="0" max="100" value="100" class="slider">
+                                <span class="value-display">100%</span>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <label>التشويش</label>
+                            <div class="slider-wrapper">
+                                <input type="range" id="blur" min="0" max="20" value="0" class="slider">
+                                <span class="value-display">0px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-box"></i>
+                        <span>الموضع والحجم</span>
+                    </div>
+                    <div class="position-panel">
+                        <div class="position-row">
+                            <label>X</label>
+                            <input type="number" id="pos-x" value="0" class="position-input">
+                        </div>
+                        <div class="position-row">
+                            <label>Y</label>
+                            <input type="number" id="pos-y" value="0" class="position-input">
+                        </div>
+                        <div class="position-row">
+                            <label>العرض</label>
+                            <input type="number" id="pos-width" value="0" class="position-input">
+                        </div>
+                        <div class="position-row">
+                            <label>الارتفاع</label>
+                            <input type="number" id="pos-height" value="0" class="position-input">
+                        </div>
+                        <div class="position-row">
+                            <label>الدوران</label>
+                            <input type="number" id="pos-rotation" value="0" min="0" max="360" class="position-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-title">
+                        <i class="fas fa-layer-group"></i>
+                        <span>التنسيق</span>
+                    </div>
+                    <div class="alignment-panel">
+                        <div class="alignment-row">
+                            <button class="align-btn" id="align-left" title="محاذاة لليسار">
+                                <i class="fas fa-align-left"></i>
+                            </button>
+                            <button class="align-btn" id="align-center-h" title="توسيط أفقي">
+                                <i class="fas fa-align-center"></i>
+                            </button>
+                            <button class="align-btn" id="align-right" title="محاذاة لليمين">
+                                <i class="fas fa-align-right"></i>
+                            </button>
+                        </div>
+                        <div class="alignment-row">
+                            <button class="align-btn" id="align-top" title="محاذاة للأعلى">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="align-btn" id="align-center-v" title="توسيط عمودي">
+                                <i class="fas fa-arrows-alt-v"></i>
+                            </button>
+                            <button class="align-btn" id="align-bottom" title="محاذاة للأسفل">
+                                <i class="fas fa-arrow-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>مساعدة - كيفية الاستخدام</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>🎨 التحكم الأساسي</h3>
+                <ul>
+                    <li><strong>اختيار العنصر:</strong> انقر على أي عنصر في الصورة لاختياره</li>
+                    <li><strong>السحب:</strong> اسحب العنصر المختار لتحريك موضعه</li>
+                    <li><strong>تغيير الحجم:</strong> اسحب من زوايا العنصر</li>
+                    <li><strong>الدوران:</strong> استخدم التحكم العلوي</li>
+                </ul>
+                <h3>🛠️ الأدوات</h3>
+                <ul>
+                    <li><strong>الطبقات:</strong> أضهر/أخف الطبقات المختلفة</li>
+                    <li><strong>التأثيرات السريعة:</strong> طبق تأثيرات بنقرة واحدة</li>
+                    <li><strong>التصفية:</strong> اضبط السطوع والتباين والشفافية</li>
+                    <li><strong>التنسيق:</strong> محاذاة العناصر تلقائياً</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="script_pro.js"></script>
+</body>
+</html>
